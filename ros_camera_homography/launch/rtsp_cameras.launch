@@ -1,0 +1,24 @@
+<launch>
+    <node pkg="ros_camera_interface" type="image_publisher_node" name="image_publisher_node" output="screen">
+        <param name="rtsp_username" value="admin" />
+        <param name="rtsp_password" value="$Kodifly2022" />
+        <param name="rtsp_ip" value="192.168.1.138" />
+        <remap from="image_topic" to="image/left"/>
+    </node>
+    <node pkg="ros_camera_interface" type="image_publisher_node" name="image_publisher_node2" output="screen">
+        <param name="rtsp_username" value="admin" />
+        <param name="rtsp_password" value="$Kodifly2022" />
+        <param name="rtsp_ip" value="192.168.1.139" />
+        <remap from="image_topic" to="image/right"/>
+    </node>
+
+    <node pkg="ros_camera_homography" type="homography.py" name="homography_node" output="screen">
+        <remap from="image_left" to="image/left" />
+        <remap from="image_right" to="image/right" />
+        <param name="homography_file_path" value="homography" />
+        <!-- npy or txt -->
+        <param name="homography_ext" value="npy" /> 
+        <!-- <param name="homography_left" value="homography"/> -->
+        <!-- <param name="homography_right" value="homography"/> -->
+    </node>
+</launch>
