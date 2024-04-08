@@ -30,6 +30,9 @@ class ImageHomographyNode:
         self.right_homography_publisher = rospy.Publisher('homography_right', Float32MultiArray, queue_size=1)
         self.homography_file = rospy.get_param('~homography_file', 'homography')
         self.homography_ext = rospy.get_param('~homography_ext', 'txt')
+        self.is_flip_right = rospy.get_param('~is_flip_right', False)
+        
+        
         self.left_subscription = rospy.Subscriber('image_left', Image, self.left_image_callback)
         self.right_subscription = rospy.Subscriber('image_right', Image, self.right_image_callback)
 
@@ -89,7 +92,13 @@ class ImageHomographyNode:
 
     def right_image_callback(self, data):
         try:
-            self.right_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            
+            right_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            if self.is_flip_right:
+                # flip horizontally
+                self.right_image = cv2.flip(right_image, 1)
+            else:
+                self.right_image = right_image
         except CvBridgeError as e:
             rospy.logerr(e)
         self.update_images()
